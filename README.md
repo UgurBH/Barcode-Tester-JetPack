@@ -1,0 +1,1 @@
+This is the project showing scanned barcode data in the user interface with composable functions.

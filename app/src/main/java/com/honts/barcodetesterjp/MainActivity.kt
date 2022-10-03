@@ -6,13 +6,12 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,8 +29,13 @@ class MainActivity : ComponentActivity(), Scanner.ScannerCallBack {
 
         setContent {
             //myUIDesign()
-            ScanDataDesign(data = "","")
+            ScanDataDesign(data = "", "")
+
         }
+    }
+
+    fun clearInput() {
+        barcodeDecodeSuccess("", "")
     }
 
     override fun onStart() {
@@ -55,9 +59,15 @@ class MainActivity : ComponentActivity(), Scanner.ScannerCallBack {
     }
 
     override fun barcodeDecodeSuccess(barcodeData: String, aimID: String) {
-        Log.d(TAG, "barcodeDecodeSuccess: recevied barcode data is $barcodeData")
         setContent {
             ScanDataDesign(data = barcodeData, aimID = aimID)
+            // below is the implement button in onCreate method
+            Button(onClick = {
+                clearInput()
+            }, modifier = Modifier.padding(130.dp, 50.dp))  {
+                Text(text = "CLEAR")
+
+            }
         }
 
     }
@@ -65,26 +75,41 @@ class MainActivity : ComponentActivity(), Scanner.ScannerCallBack {
 
 }
 
+private val TAG = "Tester-Kot"
 
 //below code is working but openning a new view
 @Composable
 fun ScanDataDesign(data: String, aimID: String) {
+
     BarcodeTesterTheme() {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.surface) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Text(text = "Please scan a barcode", modifier = Modifier.padding(20.dp))
 
-                if (!data.isEmpty()) {
-                    Text(
-                        text = "barcode data is $data \naimID is $aimID", modifier = Modifier
-                            .fillMaxSize()
-                            .height(200.dp).padding(50.dp),
-                        color = MaterialTheme.colors.primaryVariant
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if (!data.isEmpty()) {
+                        var scanOutput = "barcode data is $data \naimID is $aimID"
 
-                    )
+                        Text(
+                            //text = "barcode data is $data \naimID is $aimID",
+                            text = scanOutput,
+                            color = MaterialTheme.colors.primaryVariant,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+
+//                        Button(onClick = {
+//                            Log.d(TAG, "ScanDataDesign: button clicked")
+//                            Log.d(TAG, "ScanDataDesign: entered button if")
+//                            //scanOutput = ""
+//                            Log.d(TAG, "ScanDataDesign: scanOutputValue is $scanOutput")
+//
+//                        }, modifier = Modifier.align(Alignment.BottomCenter)) {
+//                            Text(text = "CLEAR")
+//
+//                        }
+                    }
                 }
-
             }
         }
     }
